@@ -82,14 +82,29 @@ TOKEN : {
 int root() :
 {}
 {
- 	exp() ";"
+ 	exp()
  	{
  	  return 0;
 	}
-| ";"
-  {
+	|
+	iff()
+	{
+ 	  return 0;
+	}
+	|
+	forloop()
+	{
+ 	  return 0;
+	}
+	|
+	term()
+ 	{
+ 	  return 0;
+	}
+	| ";"
+  	{
     return 1;
-  }
+  	}
 }
 
 void condition() :
@@ -120,8 +135,8 @@ void comment() :
 void iff() :
 {}
 {
-	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() < ELSE > exp()
-| 	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() 
+	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() < ELSE > exp() < DELIM >
+| 	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() < DELIM >
 }
 
 void exp() :

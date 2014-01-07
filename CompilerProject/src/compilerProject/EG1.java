@@ -108,7 +108,6 @@ public class EG1 implements EG1Constants {
       exp();
       jj_consume_token(ELSE);
       exp();
-      jj_consume_token(DELIM);
     } else if (jj_2_15(30000)) {
       jj_consume_token(IF);
       jj_consume_token(OPENPAR);
@@ -116,7 +115,6 @@ public class EG1 implements EG1Constants {
       jj_consume_token(CLOSEPAR);
       jj_consume_token(THEN);
       exp();
-      jj_consume_token(DELIM);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -848,7 +846,6 @@ public class EG1 implements EG1Constants {
     if (jj_scan_token(CLOSEPAR)) return true;
     if (jj_scan_token(THEN)) return true;
     if (jj_3R_1()) return true;
-    if (jj_scan_token(DELIM)) return true;
     return false;
   }
 
@@ -871,7 +868,6 @@ public class EG1 implements EG1Constants {
     if (jj_3R_1()) return true;
     if (jj_scan_token(ELSE)) return true;
     if (jj_3R_1()) return true;
-    if (jj_scan_token(DELIM)) return true;
     return false;
   }
 

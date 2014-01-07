@@ -135,8 +135,8 @@ void comment() :
 void iff() :
 {}
 {
-	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() < ELSE > exp() < DELIM >
-| 	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() < DELIM >
+	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() < ELSE > exp()
+| 	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp()
 }
 
 void exp() :

@@ -1,10 +1,59 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */options{  JDK_VERSION = "1.5";
+ */
+options
+{
+  JDK_VERSION = "1.5";
   LOOKAHEAD = 30000;
-  FORCE_LA_CHECK = true;  static = true;}PARSER_BEGIN(EG1)package compilerProject;
+  FORCE_LA_CHECK = true;
+  static = true;
+}
 
-public class EG1{  public static void main(String args []) throws ParseException  {    EG1 parser = new EG1(System.in);    while (true)    {      System.out.println("Reading from standard input...");      System.out.print("[1] Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (EG1.root())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        EG1.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(EG1)SKIP :
+PARSER_BEGIN(EG1)
+package compilerProject;
+
+public class EG1
+{
+  public static void main(String args []) throws ParseException
+  {
+    EG1 parser = new EG1(System.in);
+    while (true)
+    {
+      System.out.println("Reading from standard input...");
+      System.out.print("[1] Enter an expression like \"1+(2+3)*4;\" :");
+      try
+      {
+        switch (EG1.root())
+        {
+          case 0 : 
+          System.out.println("OK.");
+          break;
+          case 1 : 
+          System.out.println("Goodbye.");
+          break;
+          default : 
+          break;
+        }
+      }
+      catch (Exception e)
+      {
+        System.out.println("NOK.");
+        System.out.println(e.getMessage());
+        EG1.ReInit(System.in);
+      }
+      catch (Error e)
+      {
+        System.out.println("Oops.");
+        System.out.println(e.getMessage());
+        break;
+      }
+    }
+  }
+}
+
+PARSER_END(EG1)
+
+SKIP :
 {
   " "
 | "\r"
@@ -82,89 +131,36 @@ TOKEN : {
 int root() :
 {}
 {
- 	exp()
- 	{
- 	  return 0;
-	}
-	|
-	iff()
-	{
- 	  return 0;
-	}
-	|
-	forloop()
-	{
- 	  return 0;
-	}
-	|
-	term()
- 	{
- 	  return 0;
-	}
-	| ";"
-  	{
+    comment()  
+  {
+    return 0;
+  }
+  |
+  equation()
+  {
+    return 0;
+  }
+  |
+  iff()
+  {
+    return 0;
+  }
+  |
+  forloop()
+  {
+    return 0;
+  }
+  | ";"
+    {
     return 1;
-  	}
-}
-
-void condition() :
-{}
-{
-  < VARIABLE > relops() (< NUMBER >|< VARIABLE >)
-}
- 
-void relops() :
-{}
-{
-  < GREATERTHAN >
-| < LESSERTHAN >
-| < LESSERTHANEQUAL >
-| < GREATERTHANEQUAL >
-| < EQUAL  >
-| < NOTEQUAL >
-
+    }
 }
 
 void comment() :
 {}
 {
-	< OPENCOM > < CLOSECOM >
+  < OPENCOM > < CLOSECOM > //how to put anything between them as comment?
 }
-
-
-void iff() :
-{}
-{
-	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp() < ELSE > exp()
-| 	< IF > < OPENPAR > condition() < CLOSEPAR > < THEN > exp()
-}
-
-void exp() :
-{}
-{
-	< VARIABLE > < EQU > term() < DELIM > 	
-}
- 
-void term():
-{}
-{
-  < VARIABLE > ops() < VARIABLE >
-| < VARIABLE > ops() term()
-| < NUMBER > ops() < VARIABLE >
-| < NUMBER > ops() < NUMBER >
-| < NUMBER > ops() term()
-}
-
-void ops() :
-{}
-{
-	relops()
-	|
-	mdasops()
-	|
-	logops()
-}
-
 
 void mdasops() :
 {}
@@ -180,21 +176,62 @@ void mdasops() :
 void logops() :
 {}
 {
-	<AND> | <OR> | <NOT>
+  <AND> | <OR> | <NOT>
 }
- 
+
+void relops() :
+{}
+{
+  < GREATERTHAN >
+| < LESSERTHAN >
+| < LESSERTHANEQUAL >
+| < GREATERTHANEQUAL >
+| < EQUAL  >
+| < NOTEQUAL >
+}
+
+void equation() :  
+{}
+{
+  < VARIABLE > < EQU > exp() < DELIM >
+| < VARIABLE > < EQU > term() < DELIM > //not working!
+}
+
+void exp(): //expression does not include equals sign
+{}
+{
+  term() mdasops() term() //not working if var-num  
+| term() mdasops() exp() //not working if var=var-var-var and num-num=num
+}
+
+void term(): //part of an expression, 3+2, the terms are 3 and 2
+{}
+{
+  < VARIABLE >
+| < NUMBER >
+}
+
+void condition() :
+{}
+{
+  < VARIABLE > relops() (< NUMBER >|< VARIABLE >)
+}
+
+void iff() :
+{}
+{
+  < IF > < OPENPAR > condition() < CLOSEPAR > < THEN > equation() < ELSE > equation() 
+|   < IF > < OPENPAR > condition() < CLOSEPAR > < THEN > equation()  
+}
+
 void forloop() :
 {}
 {
-	<FOR> <OPENPAR> <VARIABLE> <EQUAL> <NUMBER> <DELIM>
-		<VARIABLE> relops() <NUMBER> <DELIM>
-		<VARIABLE> <EQUAL> <NUMBER> <CLOSEPAR>
- 	| 
-	<FOR> <OPENPAR> <VARIABLE> <EQUAL> <VARIABLE> <DELIM>
-		<VARIABLE> relops() <VARIABLE> <DELIM>
-		<VARIABLE> <EQUAL> <NUMBER> <VARIABLE> <CLOSEPAR>
- 	|
- 	<FOR> <OPENPAR> <VARIABLE> <EQUAL> <NUMBER> <DELIM>
-		<VARIABLE> relops() <NUMBER> <DELIM>
-		<VARIABLE> <EQUAL> <VARIABLE> mdasops() <NUMBER> <CLOSEPAR>	 
+  < FOR > < OPENPAR > equation() 
+    < VARIABLE > relops() term() < DELIM >
+    < VARIABLE > < EQU > exp() < CLOSEPAR >
+| < FOR > < OPENPAR > equation() 
+    < VARIABLE > relops() exp() < DELIM >
+    < VARIABLE > < EQU > exp() < CLOSEPAR >
+
 }

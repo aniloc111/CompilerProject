@@ -35,7 +35,7 @@ public class EG1
           break;
         }
       }
-      catch (Exception e)
+      catch (ParseException e)
       {
         System.out.println("NOK.");
         System.out.println(e.getMessage());
@@ -193,8 +193,12 @@ void relops() :
 void equation() :  
 {}
 {
-  < VARIABLE > < EQU > exp() < DELIM >
-| < VARIABLE > < EQU > term() < DELIM > //not working!
+  try  {	< VARIABLE > < EQU > exp() < DELIM >
+	| < VARIABLE > < EQU > term() < DELIM > //not working!
+	
+  }catch(ParseException e) {	System.out.println("EQUATION: "+e.toString());
+  }
+  
 }
 
 void exp(): //expression does not include equals sign
